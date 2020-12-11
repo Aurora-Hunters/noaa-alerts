@@ -3,8 +3,7 @@
  */
 require('dotenv').config();
 
-// const CHANNEL_ID = process.env.CHANNEL_ID;
-const CHANNEL_ID = 44841343;
+const CHANNEL_ID = process.env.CHANNEL_ID;
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const ALERTS_URL = process.env.ALERTS_URL;
 const SCHEDULE = process.env.SCHEDULE;
