@@ -32,7 +32,7 @@ cron.schedule(SCHEDULE, async () => {
     axios.get(ALERTS_URL)
         .then(async function (response) {
             const data = response.data;
-            const lastEvent = data.slice(-1)[0];
+            const lastEvent = data[0];
 
             // For performance, use .value() instead of .write() if you're only reading from db
             const inDB = !!(db.get('alerts').find(lastEvent).value());
