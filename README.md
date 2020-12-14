@@ -1,8 +1,8 @@
-# NOAA Alerts, Watches, Warnings
+# Solar Activity Alerts
 
-Bot for notifications by NOAA.
+Bot for solar activity alerts.
 
-https://t.me/noaa_alerts
+https://t.me/solar_activity_alerts
 
 ## Start
 
