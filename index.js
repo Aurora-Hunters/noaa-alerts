@@ -6,6 +6,7 @@ require('dotenv').config();
 const CHANNEL_ID = process.env.CHANNEL_ID;
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const ALERTS_URL = process.env.ALERTS_URL;
+const DISCUSSION_URL = process.env.DISCUSSION_URL;
 const SCHEDULE = process.env.SCHEDULE;
 
 const TelegramBot = require('node-telegram-bot-api');
@@ -24,7 +25,10 @@ const adapter = new FileSync('db.json');
 const db = low(adapter);
 
 // Set db default values
-db.defaults({ alerts: [] }).write()
+db.defaults({
+    alerts: [],
+    discussion: []
+}).write()
 
 cron.schedule(SCHEDULE, async () => {
     console.log('Running a task');
@@ -39,6 +43,30 @@ cron.schedule(SCHEDULE, async () => {
 
             if (!inDB) {
                 await db.get('alerts')
+                    .push(lastEvent)
+                    .write()
+
+                bot.sendMessage(CHANNEL_ID, lastEvent.message);
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+
+    axios.get(DISCUSSION_URL)
+        .then(async function (response) {
+            let data = response.data;
+
+            const lastEvent = {
+                // issue_datetime: '2021 Feb 21 0030 UTC',
+                message: data
+            };
+
+            // For performance, use .value() instead of .write() if you're only reading from db
+            const inDB = !!(db.get('discussion').find(lastEvent).value());
+
+            if (!inDB) {
+                await db.get('discussion')
                     .push(lastEvent)
                     .write()
 
