@@ -80,7 +80,7 @@ cron.schedule(SCHEDULE, async () => {
             console.log(error);
         })
 
-    imageHash(SOLAR_MAR_URL,  16, true, async (error, data) => {
+    imageHash(`${SOLAR_MAR_URL}?t=${Date.now()}`,  16, true, async (error, data) => {
         if (error) throw error;
 
         const lastEvent = {
@@ -94,7 +94,7 @@ cron.schedule(SCHEDULE, async () => {
                 .push(lastEvent)
                 .write()
 
-            bot.sendPhoto(CHANNEL_ID, SOLAR_MAR_URL);
+            bot.sendPhoto(CHANNEL_ID, `${SOLAR_MAR_URL}?t=${Date.now()}`);
         }
     });
 });
