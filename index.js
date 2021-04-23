@@ -199,8 +199,9 @@ const main = async function () {
             },
             title: {
               display: true,
-              text: 'NOAA planetary k-index forecast',
-              fontColor: '#ffffff'
+              text: 'NOAA planetary k-index forecast • auroralights.ru • t.me/solar_activity_alerts',
+              fontColor: '#ffffff',
+              fontSize: 18
             },
             plugins: {
               backgroundImageUrl: 'https://capella.pics/13da7ff1-b9cc-4838-8baa-eab18b2829cf.jpg',
