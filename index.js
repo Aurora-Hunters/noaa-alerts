@@ -207,7 +207,7 @@ const main = async function () {
                     mode: 'vertical',
                     scaleID: 'x-axis-0',
                     value: index,
-                    borderColor: '#aaa',
+                    borderColor: '#aaaaaa55',
                   };
                 }
 
@@ -235,7 +235,7 @@ const main = async function () {
                   fontColor: '#aaa'
                 },
                 gridLines: {
-                  color: '#aaa'
+                  color: '#aaaaaa55'
                 }
               }],
               xAxes: [{
