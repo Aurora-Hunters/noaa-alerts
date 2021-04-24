@@ -119,8 +119,10 @@ const main = async function () {
         });
 
       const lastEvent = {
-        labels,
-        kIndexes
+        data: {
+          labels,
+          kIndexes
+        },
       };
 
       // For performance, use .value() instead of .write() if you're only reading from db
