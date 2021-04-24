@@ -11,6 +11,7 @@
     "node-cron": "^2.0.3",
     "node-telegram-bot-api": "^0.50.0",
     "nodemon": "^2.0.6",
+    "object-hash": "^2.1.1",
     "quickchart-js": "^1.0.7"
   }
 }

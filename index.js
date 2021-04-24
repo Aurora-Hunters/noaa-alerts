@@ -15,6 +15,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const QuickChart = require('quickchart-js');
 const axios = require('axios');
 const cron = require('node-cron');
+const hash = require('object-hash');
 const path = require('path');
 const fs = require('fs');
 const low = require('lowdb');
@@ -111,7 +112,7 @@ const main = async function () {
 
         date.setTime(date.getTime() + (3 * 60 * 60 * 1000));
 
-        return !!(date - new Date() + (3 * 60 * 60 * 1000) >= 0);
+        return date - new Date() + (3 * 60 * 60 * 1000) >= 0;
       })
         .map(item => {
           labels.push(item[0]);
@@ -119,14 +120,14 @@ const main = async function () {
         });
 
       const lastEvent = {
-        data: {
+        hash: hash({
           labels,
           kIndexes
-        },
+        })
       };
 
       // For performance, use .value() instead of .write() if you're only reading from db
-      const inDB = !!(db.get('k_index').find(lastEvent).value());
+      const inDB = await db.get('k_index').find(lastEvent).value();
 
       if (!inDB) {
         await db.get('k_index')
