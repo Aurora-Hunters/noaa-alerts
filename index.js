@@ -111,7 +111,7 @@ const main = async function () {
 
         date.setTime(date.getTime() + (3 * 60 * 60 * 1000));
 
-        return date > new Date();
+        return !!(date - new Date() + (3 * 60 * 60 * 1000) >= 0);
       })
         .map(item => {
           labels.push(item[0]);
@@ -119,13 +119,14 @@ const main = async function () {
         });
 
       const lastEvent = {
-        message: data
+        labels,
+        kIndexes
       };
 
       // For performance, use .value() instead of .write() if you're only reading from db
       const inDB = !!(db.get('k_index').find(lastEvent).value());
 
-      if (!inDB) {
+      if (!!inDB) {
         await db.get('k_index')
           .push(lastEvent)
           .write()
@@ -135,15 +136,17 @@ const main = async function () {
         chart.setWidth(900)
         chart.setHeight(400);
 
+        const monthShortNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+          "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        ];
+        const timeNow = `${(new Date).getDate()} ${monthShortNames[(new Date).getMonth()]} ${(new Date).getHours()}:${(new Date).getMinutes() < 10 ? '0' : ''}${(new Date).getMinutes()}`
+
         let chartUrl = 'https://quickchart.io/chart';
 
         chart.setConfig({
           type: 'bar',
           data: {
             labels: labels.map(date => {
-              const monthShortNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-              ];
               let dateItem = new Date(date);
 
               dateItem.setTime(dateItem.getTime() + (3 * 60 * 60 * 1000));
@@ -161,9 +164,14 @@ const main = async function () {
               data: kIndexes,
               fill: true,
               backgroundColor: kIndexes.map(kIndex => {
-                if (kIndex <= 3) return '#00ff00';
-                if (kIndex <= 5) return '#ffff00';
-                if (kIndex <= 9) return '#ff0000';
+                if (kIndex <= 2) return 'rgba(115, 191, 32, 0.88)';
+                if (kIndex <= 3) return 'rgba(133, 255, 0, 0.88)';
+                if (kIndex <= 4) return 'rgba(224, 180, 0, 0.88)';
+                if (kIndex <= 5) return 'rgba(250, 100, 0, 0.88)';
+                if (kIndex <= 6) return 'rgba(196, 22, 42, 0.88)';
+                if (kIndex <= 7) return 'rgba(172, 0, 255, 0.88)';
+                if (kIndex <= 8) return 'rgba(31, 96, 196, 0.88)';
+                if (kIndex <= 9) return 'rgba(45, 45, 45, 0.88)';
               }),
               borderWidth: 1
             }]
@@ -199,7 +207,7 @@ const main = async function () {
             },
             title: {
               display: true,
-              text: 'NOAA planetary k-index forecast • auroralights.ru • t.me/solar_activity_alerts',
+              text: `NOAA planetary k-index forecast • auroralights.ru • t.me/solar_activity_alerts • ${timeNow}`,
               fontColor: '#ffffff',
               fontSize: 18
             },
@@ -265,5 +273,6 @@ const main = async function () {
 
 cron.schedule(SCHEDULE, main);
 
+// main();
 
 
