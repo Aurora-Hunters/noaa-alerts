@@ -224,7 +224,7 @@ const main = async function () {
               fontSize: 18
             },
             plugins: {
-              backgroundImageUrl: 'https://capella.pics/0c6d1ca6-de9e-493e-92bb-4b70ce9b41c1.jpg',
+              backgroundImageUrl: 'https://capella.pics/c41364dd-9f1b-454d-8edb-7064727c4a1d.jpg',
             },
             scales: {
               yAxes: [{
@@ -253,7 +253,9 @@ const main = async function () {
         const chartFileName = 'chart.png';
 
         await chart.toFile(chartFileName);
-        await bot.sendPhoto(CHANNEL_ID, chartFileName);
+        await bot.sendPhoto(CHANNEL_ID, chartFileName, {
+          disable_notification: true
+        });
         try { fs.unlinkSync(chartFileName) } catch(err) {}
       }
     })
