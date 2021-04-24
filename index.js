@@ -126,7 +126,7 @@ const main = async function () {
       // For performance, use .value() instead of .write() if you're only reading from db
       const inDB = !!(db.get('k_index').find(lastEvent).value());
 
-      if (!!inDB) {
+      if (!inDB) {
         await db.get('k_index')
           .push(lastEvent)
           .write()
