@@ -212,7 +212,7 @@ const main = async function () {
               fontSize: 18
             },
             plugins: {
-              backgroundImageUrl: 'https://capella.pics/940b5012-603a-4543-88f2-7985b05d7933.jpg',
+              backgroundImageUrl: 'https://capella.pics/9868525a-82d6-4a5d-9afa-933d6d686d7a.jpg',
             },
             scales: {
               yAxes: [{
