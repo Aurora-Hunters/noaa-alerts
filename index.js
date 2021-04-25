@@ -219,7 +219,7 @@ const main = async function () {
             },
             title: {
               display: true,
-              text: `NOAA planetary k-index forecast • auroralights.ru • t.me/solar_activity_alerts • ${timeNow}`,
+              text: `NOAA planetary k-index forecast • auroralights.ru • t.me/solar_activity_alerts • ${timeNow} MSK`,
               fontColor: '#ffffff',
               fontSize: 18
             },
