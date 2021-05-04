@@ -96,42 +96,50 @@ const main = async function () {
   axios.get(K_INDEX_FORECAST_URL)
     .then(async function (response) {
       const data  = response.data;
-      const labels = [];
-      const kIndexes = [];
+      let labels = [];
+      let kIndexes = [];
 
       /**
        * Remove header ["time_tag","kp","observed","noaa_scale"]
        */
       data.shift();
 
-      /**
-       * Remove data for past hours
-       */
-      data.filter(item => {
-        const date = new Date(item[0]);
-
-        date.setTime(date.getTime() + (3 * 60 * 60 * 1000));
-
-        return date - new Date() + (3 * 60 * 60 * 1000) >= 0;
-      })
-        .map(item => {
+      data.forEach(item => {
           labels.push(item[0]);
           kIndexes.push(item[1]);
         });
 
-      const lastEvent = {
+      const event = {
         hash: hash({
           labels,
           kIndexes
         })
       };
 
+      labels = [];
+      kIndexes = [];
+
+      /**
+       * Remove data for past hours
+       */
+      data.filter(item => {
+          const date = new Date(item[0]);
+
+          date.setTime(date.getTime() + (3 * 60 * 60 * 1000));
+
+          return date - new Date() + (3 * 60 * 60 * 1000) >= 0;
+        })
+        .forEach(item => {
+          labels.push(item[0]);
+          kIndexes.push(item[1]);
+        });
+
       // For performance, use .value() instead of .write() if you're only reading from db
-      const inDB = await db.get('k_index').find(lastEvent).value();
+      const inDB = await db.get('k_index').find(event).value();
 
       if (!inDB) {
         await db.get('k_index')
-          .push(lastEvent)
+          .push(event)
           .write()
 
         const chart = new QuickChart();
@@ -166,16 +174,6 @@ const main = async function () {
               fill: true,
               borderColor: '#ffffff22',
               backgroundColor: kIndexes.map(kIndex => {
-                // if (kIndex <= 2) return 'rgba(115, 191, 32, 0.88)';
-                // if (kIndex <= 3) return 'rgba(133, 255, 0, 0.88)';
-                // if (kIndex <= 4) return 'rgba(224, 180, 0, 0.88)';
-                // if (kIndex <= 5) return 'rgba(250, 100, 0, 0.88)';
-                // if (kIndex <= 6) return 'rgba(196, 22, 42, 0.88)';
-                // if (kIndex <= 7) return 'rgba(172, 0, 255, 0.88)';
-                // if (kIndex <= 8) return 'rgba(31, 96, 196, 0.88)';
-                // if (kIndex <= 9) return 'rgba(45, 45, 45, 0.88)';
-
-
                 if (kIndex <= 2) return '#1e3731fa';
                 if (kIndex <= 3) return '#3c6322fa';
                 if (kIndex <= 4) return '#919733fa';
@@ -253,9 +251,7 @@ const main = async function () {
         const chartFileName = 'chart.png';
 
         await chart.toFile(chartFileName);
-        await bot.sendPhoto(CHANNEL_ID, chartFileName, {
-          disable_notification: true
-        });
+        await bot.sendPhoto(CHANNEL_ID, chartFileName);
         try { fs.unlinkSync(chartFileName) } catch(err) {}
       }
     })
