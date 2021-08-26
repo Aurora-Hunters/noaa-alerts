@@ -21,6 +21,7 @@ const fs = require('fs');
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 const { imageHash }= require('image-hash');
+const get_directory = require('./utils/get-directory');
 
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(BOT_TOKEN, {polling: true});
@@ -36,6 +37,10 @@ db.defaults({
     synopticMap: [],
     k_index: []
 }).write()
+
+const PATH_TO_STORAGE = path.join(__dirname, 'storage');
+
+get_directory(PATH_TO_STORAGE);
 
 const main = async function () {
   console.log('Running a task');
@@ -135,7 +140,7 @@ const main = async function () {
         });
 
       // For performance, use .value() instead of .write() if you're only reading from db
-      const inDB = await db.get('k_index').find(event).value();
+      const inDB = false;//await db.get('k_index').find(event).value();
 
       if (!inDB) {
         await db.get('k_index')
@@ -248,11 +253,12 @@ const main = async function () {
           }
         });
 
-        const chartFileName = 'chart.png';
+        const chartFileName = path.join(PATH_TO_STORAGE, 'noaa-3days-chart.png');
 
         await chart.toFile(chartFileName);
         await bot.sendPhoto(CHANNEL_ID, chartFileName);
-        try { fs.unlinkSync(chartFileName) } catch(err) {}
+
+        // try { fs.unlinkSync(chartFileName) } catch(err) {}
       }
     })
     .catch(function (error) {

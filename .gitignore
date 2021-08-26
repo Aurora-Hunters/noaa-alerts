@@ -107,5 +107,5 @@ dist
 .idea/
 
 .env
-
 db.json
+storage/
