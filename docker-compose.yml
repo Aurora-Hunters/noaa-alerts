@@ -11,6 +11,6 @@ services:
   web:
     image: halverneus/static-file-server:v1.8.2
     ports:
-      - '8851:8080'
+      - '8855:8080'
     volumes:
       - './storage:/web/storage'
