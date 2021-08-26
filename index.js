@@ -140,7 +140,7 @@ const main = async function () {
         });
 
       // For performance, use .value() instead of .write() if you're only reading from db
-      const inDB = false;//await db.get('k_index').find(event).value();
+      const inDB = await db.get('k_index').find(event).value();
 
       if (!inDB) {
         await db.get('k_index')
