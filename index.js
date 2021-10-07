@@ -48,7 +48,7 @@ const main = async function () {
   /**
    * Check for alerts
    */
-  axios.get(ALERTS_URL)
+  await axios.get(ALERTS_URL)
     .then(async function (response) {
       const data = response.data;
       const lastEvent = data[0];
@@ -71,7 +71,7 @@ const main = async function () {
   /**
    * Check for a new discussion
    */
-  axios.get(DISCUSSION_URL)
+  await axios.get(DISCUSSION_URL)
     .then(async function (response) {
       let data = response.data;
 
@@ -98,7 +98,7 @@ const main = async function () {
   /**
    * Check for k-index forecast
    */
-  axios.get(K_INDEX_FORECAST_URL)
+  await axios.get(K_INDEX_FORECAST_URL)
     .then(async function (response) {
       const data  = response.data;
       let labels = [];
@@ -265,30 +265,32 @@ const main = async function () {
       console.log(error);
     })
 
-  /**
-   * Check for handwritten solar map
-   */
-  imageHash(`${SOLAR_MAR_URL}?t=${Date.now()}`,  16, true, async (error, data) => {
-    if (error) throw error;
-
-    const lastEvent = {
-      hash: data
-    };
-
-    const inDB = !!(db.get('synopticMap').find(lastEvent).value());
-
-    if (!inDB) {
-      await db.get('synopticMap')
-        .push(lastEvent)
-        .write()
-
-      bot.sendPhoto(CHANNEL_ID, `${SOLAR_MAR_URL}?t=${Date.now()}`);
-    }
-  });
+  // /**
+  //  * Check for handwritten solar map
+  //  */
+  // imageHash(`${SOLAR_MAR_URL}?t=${Date.now()}`,  16, true, async (error, data) => {
+  //   if (error) throw error;
+  //
+  //   const lastEvent = {
+  //     hash: data
+  //   };
+  //
+  //   const inDB = !!(db.get('synopticMap').find(lastEvent).value());
+  //
+  //   if (!inDB) {
+  //     await db.get('synopticMap')
+  //       .push(lastEvent)
+  //       .write()
+  //
+  //     bot.sendPhoto(CHANNEL_ID, `${SOLAR_MAR_URL}?t=${Date.now()}`);
+  //   }
+  // });
 };
 
 cron.schedule(SCHEDULE, main);
 
-// main();
+// (async () => {
+//   await main();
+// })();
 
 
