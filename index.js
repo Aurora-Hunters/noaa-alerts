@@ -24,7 +24,7 @@ const { imageHash }= require('image-hash');
 const get_directory = require('./utils/get-directory');
 
 // Create a bot that uses 'polling' to fetch new updates
-const bot = new TelegramBot(BOT_TOKEN, {polling: true});
+const bot = new TelegramBot(BOT_TOKEN);
 
 // Prepare database
 const adapter = new FileSync('db.json');
