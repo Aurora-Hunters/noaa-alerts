@@ -10,6 +10,7 @@ const DISCUSSION_URL = process.env.DISCUSSION_URL;
 const SOLAR_MAR_URL = process.env.SOLAR_MAR_URL;
 const K_INDEX_FORECAST_URL = process.env.K_INDEX_FORECAST_URL;
 const SCHEDULE = process.env.SCHEDULE;
+const MESOSPHERIC_CLOUD_MAP = process.env.MESOSPHERIC_CLOUD_MAP;
 
 const TelegramBot = require('node-telegram-bot-api');
 const QuickChart = require('quickchart-js');
@@ -32,10 +33,11 @@ const db = low(adapter);
 
 // Set db default values
 db.defaults({
-    alerts: [],
-    discussion: [],
-    synopticMap: [],
-    k_index: []
+  alerts: [],
+  discussion: [],
+  synopticMap: [],
+  k_index: [],
+  mesosphericCloudMap: [],
 }).write()
 
 const PATH_TO_STORAGE = path.join(__dirname, 'storage');
@@ -285,12 +287,39 @@ const main = async function () {
   //     bot.sendPhoto(CHANNEL_ID, `${SOLAR_MAR_URL}?t=${Date.now()}`);
   //   }
   // });
+  /**
+   * Check for mesospheric cloud map
+   */
+  try {
+    imageHash(`${MESOSPHERIC_CLOUD_MAP}?t=${Date.now()}`, 16, true, async (error, data) => {
+      if (error) throw error;
+
+      const lastEvent = {
+        hash: data
+      };
+
+      const inDB = !!(db.get('mesosphericCloudMap').find(lastEvent).value());
+
+      if (!inDB) {
+        await db.get('mesosphericCloudMap')
+          .push(lastEvent)
+          .write()
+
+        bot.sendPhoto(CHANNEL_ID, `${MESOSPHERIC_CLOUD_MAP}?t=${Date.now()}`);
+      }
+    });
+  } catch (e) {
+    console.log(`-_- Error: ${e}`)
+  }
 };
 
-cron.schedule(SCHEDULE, main);
 
-// (async () => {
-//   await main();
-// })();
+// cron.schedule(SCHEDULE, main);
+
+(async () => {
+  await main();
+
+  cron.schedule(SCHEDULE, main);
+})();
 
 
