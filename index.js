@@ -263,79 +263,79 @@ const main = async function () {
 
         // try { fs.unlinkSync(chartFileName) } catch(err) {}
 
-        /** Composing description */
-        const numberOfElements = 8;
-        let description = "Прогнозы сияний и оповещения о вспышках\n" +
-          "\n" +
-          "Прогноз КП-индекса от NOAA на 24 часа:\n" +
-          "\n";
-
-
-        labels.slice(0, numberOfElements).forEach((date, index) => {
-          let dateItem = new Date(date);
-          const monthShortNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-          ];
-
-          dateItem.setTime(dateItem.getTime() + (3 * 60 * 60 * 1000));
-
-          const DAY = `${dateItem.getDate()}`;
-          const HOUR = dateItem.getHours();
-          const HOUR12 = (dateItem.getHours() + 24) % 12 || 12;
-
-
-          if (index === 0) {
-            description += `${DAY} ${monthShortNames[dateItem.getMonth()]}\n`;
-          }
-
-          let emojiClock;
-          let emojiBlock;
-
-          switch (HOUR12) {
-            case 1:  emojiClock = '🕐'; break;
-            case 2:  emojiClock = '🕑'; break;
-            case 3:  emojiClock = '🕒'; break;
-            case 4:  emojiClock = '🕓'; break;
-            case 5:  emojiClock = '🕔'; break;
-            case 6:  emojiClock = '🕕'; break;
-            case 7:  emojiClock = '🕖'; break;
-            case 8:  emojiClock = '🕗'; break;
-            case 9:  emojiClock = '🕘'; break;
-            case 10: emojiClock = '🕙'; break;
-            case 11: emojiClock = '🕚'; break;
-            case 12: emojiClock = '🕛'; break;
-          }
-
-          if (index === 0) {
-            emojiClock = '👉';
-          }
-
-          switch (kIndexes[index]) {
-            case '0':
-            case '1':
-            case '2':
-            case '3':  emojiBlock = '🟩'; break;
-            case '4':  emojiBlock = '🟨'; break;
-            case '5':  emojiBlock = '🟧'; break;
-            case '6':  emojiBlock = '🟥'; break;
-            case '7':  emojiBlock = '🟪'; break;
-            case '8':  emojiBlock = '🟦'; break;
-            case '9':  emojiBlock = '⬛'; break;
-          }
-
-          if (HOUR === 0) {
-            description += `${DAY} ${monthShortNames[dateItem.getMonth()]}\n`;
-          }
-
-          description += `${emojiClock}${emojiBlock.repeat(kIndexes[index])}\n`;
-        });
-
-        // console.log(description);
-
-        // await new Promise(r => setTimeout(r, 10000));
-        await bot.setChatDescription(CHANNEL_ID, description);
-        /** end of composing description */
-      }
+      //   /** Composing description */
+      //   const numberOfElements = 8;
+      //   let description = "Прогнозы сияний и оповещения о вспышках\n" +
+      //     "\n" +
+      //     "Прогноз КП-индекса от NOAA на 24 часа:\n" +
+      //     "\n";
+      //
+      //
+      //   labels.slice(0, numberOfElements).forEach((date, index) => {
+      //     let dateItem = new Date(date);
+      //     const monthShortNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      //       "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+      //     ];
+      //
+      //     dateItem.setTime(dateItem.getTime() + (3 * 60 * 60 * 1000));
+      //
+      //     const DAY = `${dateItem.getDate()}`;
+      //     const HOUR = dateItem.getHours();
+      //     const HOUR12 = (dateItem.getHours() + 24) % 12 || 12;
+      //
+      //
+      //     if (index === 0) {
+      //       description += `${DAY} ${monthShortNames[dateItem.getMonth()]}\n`;
+      //     }
+      //
+      //     let emojiClock;
+      //     let emojiBlock;
+      //
+      //     switch (HOUR12) {
+      //       case 1:  emojiClock = '🕐'; break;
+      //       case 2:  emojiClock = '🕑'; break;
+      //       case 3:  emojiClock = '🕒'; break;
+      //       case 4:  emojiClock = '🕓'; break;
+      //       case 5:  emojiClock = '🕔'; break;
+      //       case 6:  emojiClock = '🕕'; break;
+      //       case 7:  emojiClock = '🕖'; break;
+      //       case 8:  emojiClock = '🕗'; break;
+      //       case 9:  emojiClock = '🕘'; break;
+      //       case 10: emojiClock = '🕙'; break;
+      //       case 11: emojiClock = '🕚'; break;
+      //       case 12: emojiClock = '🕛'; break;
+      //     }
+      //
+      //     if (index === 0) {
+      //       emojiClock = '👉';
+      //     }
+      //
+      //     switch (kIndexes[index]) {
+      //       case '0':
+      //       case '1':
+      //       case '2':
+      //       case '3':  emojiBlock = '🟩'; break;
+      //       case '4':  emojiBlock = '🟨'; break;
+      //       case '5':  emojiBlock = '🟧'; break;
+      //       case '6':  emojiBlock = '🟥'; break;
+      //       case '7':  emojiBlock = '🟪'; break;
+      //       case '8':  emojiBlock = '🟦'; break;
+      //       case '9':  emojiBlock = '⬛'; break;
+      //     }
+      //
+      //     if (HOUR === 0) {
+      //       description += `${DAY} ${monthShortNames[dateItem.getMonth()]}\n`;
+      //     }
+      //
+      //     description += `${emojiClock}${emojiBlock.repeat(kIndexes[index])}\n`;
+      //   });
+      //
+      //   // console.log(description);
+      //
+      //   // await new Promise(r => setTimeout(r, 10000));
+      //   await bot.setChatDescription(CHANNEL_ID, description);
+      //   /** end of composing description */
+      // }
     })
     .catch(function (error) {
       console.log(error);
