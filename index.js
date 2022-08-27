@@ -27,6 +27,8 @@ const get_directory = require('./utils/get-directory');
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(BOT_TOKEN);
 
+bot.on('message', console.log)
+
 // Prepare database
 const adapter = new FileSync('db.json');
 const db = low(adapter);
@@ -82,7 +84,6 @@ const main = async function () {
         message: data
       };
 
-      // For performance, use .value() instead of .write() if you're only reading from db
       const inDB = !!(db.get('discussion').find(lastEvent).value());
 
       if (!inDB) {
@@ -261,56 +262,134 @@ const main = async function () {
         await bot.sendPhoto(CHANNEL_ID, chartFileName);
 
         // try { fs.unlinkSync(chartFileName) } catch(err) {}
+
+        /** Composing description */
+        const numberOfElements = 8;
+        let description = "Прогнозы сияний и оповещения о вспышках\n" +
+          "\n" +
+          "Прогноз КП-индекса от NOAA на 24 часа:\n" +
+          "\n";
+
+
+        labels.slice(0, numberOfElements).forEach((date, index) => {
+          let dateItem = new Date(date);
+          const monthShortNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+          ];
+
+          dateItem.setTime(dateItem.getTime() + (3 * 60 * 60 * 1000));
+
+          const DAY = `${dateItem.getDate()}`;
+          const HOUR = dateItem.getHours();
+          const HOUR12 = (dateItem.getHours() + 24) % 12 || 12;
+
+
+          if (index === 0) {
+            description += `${DAY} ${monthShortNames[dateItem.getMonth()]}\n`;
+          }
+
+          let emojiClock;
+          let emojiBlock;
+
+          switch (HOUR12) {
+            case 1:  emojiClock = '🕐'; break;
+            case 2:  emojiClock = '🕑'; break;
+            case 3:  emojiClock = '🕒'; break;
+            case 4:  emojiClock = '🕓'; break;
+            case 5:  emojiClock = '🕔'; break;
+            case 6:  emojiClock = '🕕'; break;
+            case 7:  emojiClock = '🕖'; break;
+            case 8:  emojiClock = '🕗'; break;
+            case 9:  emojiClock = '🕘'; break;
+            case 10: emojiClock = '🕙'; break;
+            case 11: emojiClock = '🕚'; break;
+            case 12: emojiClock = '🕛'; break;
+          }
+
+          if (index === 0) {
+            emojiClock = '👉';
+          }
+
+          switch (kIndexes[index]) {
+            case '0':
+            case '1':
+            case '2':
+            case '3':  emojiBlock = '🟩'; break;
+            case '4':  emojiBlock = '🟨'; break;
+            case '5':  emojiBlock = '🟧'; break;
+            case '6':  emojiBlock = '🟥'; break;
+            case '7':  emojiBlock = '🟪'; break;
+            case '8':  emojiBlock = '🟦'; break;
+            case '9':  emojiBlock = '⬛'; break;
+          }
+
+          if (HOUR === 0) {
+            description += `${DAY} ${monthShortNames[dateItem.getMonth()]}\n`;
+          }
+
+          description += `${emojiClock}${emojiBlock.repeat(kIndexes[index])}\n`;
+        });
+
+        // console.log(description);
+
+        // await new Promise(r => setTimeout(r, 10000));
+        await bot.setChatDescription(CHANNEL_ID, description);
+        /** end of composing description */
       }
     })
     .catch(function (error) {
       console.log(error);
     })
 
-  // /**
-  //  * Check for handwritten solar map
-  //  */
-  // imageHash(`${SOLAR_MAR_URL}?t=${Date.now()}`,  16, true, async (error, data) => {
-  //   if (error) throw error;
-  //
-  //   const lastEvent = {
-  //     hash: data
-  //   };
-  //
-  //   const inDB = !!(db.get('synopticMap').find(lastEvent).value());
-  //
-  //   if (!inDB) {
-  //     await db.get('synopticMap')
-  //       .push(lastEvent)
-  //       .write()
-  //
-  //     bot.sendPhoto(CHANNEL_ID, `${SOLAR_MAR_URL}?t=${Date.now()}`);
-  //   }
-  // });
   /**
-   * Check for mesospheric cloud map
+   * Check for handwritten solar map
    */
   try {
-    imageHash(`${MESOSPHERIC_CLOUD_MAP}?t=${Date.now()}`, 16, true, async (error, data) => {
+    imageHash(`${SOLAR_MAR_URL}?t=${Date.now()}`, 16, true, async (error, data) => {
       if (error) throw error;
 
       const lastEvent = {
         hash: data
       };
 
-      const inDB = !!(db.get('mesosphericCloudMap').find(lastEvent).value());
+      const inDB = !!(db.get('synopticMap').find(lastEvent).value());
 
       if (!inDB) {
-        await db.get('mesosphericCloudMap')
+        await db.get('synopticMap')
           .push(lastEvent)
           .write()
 
-        bot.sendPhoto(CHANNEL_ID, `${MESOSPHERIC_CLOUD_MAP}?t=${Date.now()}`);
+        bot.sendPhoto(CHANNEL_ID, `${SOLAR_MAR_URL}?t=${Date.now()}`);
       }
     });
   } catch (e) {
     console.log(`-_- Error: ${e}`)
   }
+
+  // /**
+  //  * Check for mesospheric cloud map
+  //  */
+  // try {
+  //   imageHash(`${MESOSPHERIC_CLOUD_MAP}?t=${Date.now()}`, 16, true, async (error, data) => {
+  //     if (error) throw error;
+  //
+  //     const lastEvent = {
+  //       hash: data
+  //     };
+  //
+  //     const inDB = !!(db.get('mesosphericCloudMap').find(lastEvent).value());
+  //
+  //     if (!inDB) {
+  //       await db.get('mesosphericCloudMap')
+  //         .push(lastEvent)
+  //         .write()
+  //
+  //       bot.sendPhoto(CHANNEL_ID, `${MESOSPHERIC_CLOUD_MAP}?t=${Date.now()}`);
+  //     }
+  //   });
+  // } catch (e) {
+  //   console.log(`-_- Error: ${e}`)
+  // }
 };
 
 
