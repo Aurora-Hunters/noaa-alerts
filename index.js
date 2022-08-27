@@ -335,7 +335,7 @@ const main = async function () {
       //   // await new Promise(r => setTimeout(r, 10000));
       //   await bot.setChatDescription(CHANNEL_ID, description);
       //   /** end of composing description */
-      // }
+      }
     })
     .catch(function (error) {
       console.log(error);
