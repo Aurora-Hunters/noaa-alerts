@@ -183,7 +183,7 @@ const main = async function () {
               borderColor: '#ffffff22',
               backgroundColor: kIndexes.map(kIndex => {
                 if (kIndex < 3) return '#1e3731fa';
-                if (kIndex >= 3) return '#3c6322fa';
+                if (kIndex < 4) return '#3c6322fa';
                 if (kIndex >= 4) return '#919733fa';
                 if (kIndex >= 5) return '#804b19fa';
                 if (kIndex >= 6) return '#58212afa';
