@@ -231,7 +231,7 @@ const main = async function () {
               fontSize: 18
             },
             plugins: {
-              backgroundImageUrl: 'https://capella.pics/c41364dd-9f1b-454d-8edb-7064727c4a1d.jpg',
+              backgroundImageUrl: 'https://aurora-hunters.github.io/solar-activity-alerts/c41364dd-9f1b-454d-8edb-7064727c4a1d.jpg',
             },
             scales: {
               yAxes: [{
